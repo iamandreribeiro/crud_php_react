@@ -1,0 +1,154 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #64DAF5;
+  padding: 50px 100px;
+}
+
+h1 {
+  font-size: 25px;
+}
+
+h2 {
+  font-size: 15px;
+}
+
+h3 {
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+}
+
+.ButtonContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Forms {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  >button {
+    position: absolute;
+    bottom: 0;
+  }
+}
+
+.PersonForms {
+  display: flex;
+  flex-direction: column;
+  position: relative;  
+}
+
+.Form {
+  display: flex;
+  flex: row;
+  align-items: center;
+  >input {
+    height: 20px;
+    margin-left: 5px;
+  }
+
+  >select {
+    height: 20px;
+    margin-left: 5px;
+  }
+}
+
+.DataField {
+  display: flex;
+  flex-direction: row;
+  >div{
+    border: 1px solid black;
+    width: 100px;
+  }
+  ;
+}
+table, th, td {
+  border:1px solid black;
+}
+.Person {
+  display: flex;
+  flex-direction: column;
+  background-color: #6BE8BA;
+  padding: 5px;
+}
+
+.PhoneContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  >button {
+    width: 50%;
+    margin-top: 10px;
+  }
+}
+
+.PhoneForms {
+  background-color: #6BE8BA;
+  height: 300px;
+  display: flex;
+  flex-direction: row;
+  border: 1px solid black;
+  position: relative;
+  overflow-y: scroll;
+}
+
+.Phone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  >input {
+    width: 80%;
+    margin-bottom: 5px;
+  }
+}
+
+.Footer {
+  margin-top: 5px;
+  border-top: 1px solid black;
+}
+
+/* 
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+} */
