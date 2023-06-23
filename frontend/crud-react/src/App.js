@@ -15,11 +15,8 @@ function App() {
   const [Setor, setSetor] = useState("");
   const [Cidade, setCidade] = useState("");
   const [UF, setUF] = useState("");
-  const [inputCount, setInputCount] = useState(5);
-  const [inputNumeros, setInputNumeros] = useState([]);
-  const [inputDescricao, setInputDescricao] = useState([]);
   const [dados, setDados] = useState([]);
-  const [update, setUpdate] = useState(true);
+  const [update, setUpdate] = useState(false);
   const [deleteButton, setDeleteButton] = useState(true);
   const [editPhone, setEditPhone] = useState([]);
   const [userId, setUserId] = useState("");
@@ -27,6 +24,7 @@ function App() {
   const [boolean, setBoolean] = useState(false);
 
   function editar(id) {
+    setUpdate(true);
     setBoolean(true);
     setDeleteButton(false);
     setUserId(id);
@@ -45,8 +43,6 @@ function App() {
       })
     }
     setTelefones(arr);
-
-    console.log(edit[0].Telefone);
     setEditPhone(edit[0].Telefone);
     setName(edit[0].nome);
     setCPF(edit[0].CPF);
@@ -60,37 +56,28 @@ function App() {
   }
 
   function deletar() {
-    axios.delete('http://localhost/crud_php_react/api.php/' + userId)
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((response) => {
-        console.log(response.data);
-      })
-
-    setUpdate(!update);
+    setUpdate(true);
+    axios.delete('http://localhost/crud_php_react/api.php/' + userId);
   }
 
   function criaObjeto() {
-    const objetoCadastro = {
-      name: name, cpf: CPF, rg: RG, cep: CEP, logradouro: Logradouro,
-      complemento: Complemento, setor: Setor, cidade: Cidade, uf: UF, phones: telefones
+    setUpdate(true);
+    if (!name || !CPF || !RG || !CEP || !Logradouro || !Complemento || !Setor || !Cidade) {
+      alert(`Preencha todos os campos para efetuar o cadastro`);
+    } else {
+      const objetoCadastro = {
+        name: name, cpf: CPF, rg: RG, cep: CEP, logradouro: Logradouro,
+        complemento: Complemento, setor: Setor, cidade: Cidade, uf: UF, phones: telefones
+      }
+
+      axios.post('http://localhost/crud_php_react/api.php', { objetoCadastro })
     }
-
-    axios.post('http://localhost/crud_php_react/api.php', { objetoCadastro })
-      .then((response) => {
-        console.log(response.data);
-      }).catch((error) => {
-        console.log(error);
-      })
-
-    setUpdate(!update);
   }
 
   useEffect(() => {
+    setUpdate(false);
     axios.get('http://localhost/crud_php_react/api.php')
       .then((response) => {
-        console.log(response);
         const novosDados = response.data.map((n) => {
           let telefones = JSON.parse(n.phones);
           return {
@@ -112,52 +99,23 @@ function App() {
         const tam = telefones.length < 5 ? 5 : telefones.length;
         for (let i = 0; i < tam; i++) {
           arr.push({
-            phoneNumber:telefones[i] ? telefones[i].phoneNumber : "",
+            phoneNumber: telefones[i] ? telefones[i].phoneNumber : "",
             phoneDescription: telefones[i] ? telefones[i].phoneDescription : ""
           })
         }
 
         setTelefones(arr);
-        console.log(telefones);
         setDados(novosDados);
-      }).catch((error) => {
-        console.log(error);
       })
   }, [update]);
 
-  const handleTelefoneNumero = (event, index) => {
-    const { value } = event.target;
-
-    setInputNumeros((prevValues) => {
-      const updatedValues = [...prevValues];
-      updatedValues[index] = value;
-      return updatedValues;
-    });
-  };
-
-  const handleDescricaoNumero = (event, index) => {
-    const { value } = event.target;
-
-    setInputDescricao((prevValues) => {
-      const updatedValues = [...prevValues];
-      updatedValues[index] = value;
-      return updatedValues;
-    });
-  };
-
-  function teste() {
-    console.log("Oi");
+  function atualizaObjeto() {
     const objetoCadastro = {
       name: name, cpf: CPF, rg: RG, cep: CEP, logradouro: Logradouro,
       complemento: Complemento, setor: Setor, cidade: Cidade, uf: UF, phones: telefones
     }
 
-    axios.put('http://localhost/crud_php_react/api.php/' + userId, {objetoCadastro})
-      .then((response) => {
-        console.log(response.data);
-      })
-    console.log(editPhone);
-    console.log(objetoCadastro);
+    axios.put('http://localhost/crud_php_react/api.php/' + userId, { objetoCadastro })
   }
 
   return (
@@ -215,12 +173,11 @@ function App() {
         <div className="PhoneContainer">
           <div className="PhoneForms">
             <table className="Phone">
-              <thead>
-                <tr>
-                  <td>Telefone</td>
-                  <td>Descrição</td>
-                </tr>
-              </thead>
+              <tr>
+                <th>Telefone</th>
+                <th>Descrição</th>
+              </tr>
+
               {
                 telefones.map((telefone, i) => {
                   return (
@@ -253,11 +210,20 @@ function App() {
               }
             </table>
           </div>
-          <button onClick={() => setInputCount(inputCount + 1)}>Adicionar novos contatos</button>
+          <button onClick={() => {
+            let arr = [...telefones];
+            arr.push({
+              id: 0,
+              telefone: "",
+              descricao: ""
+            });
+            setTelefones(arr);
+          }}>+
+          </button>
         </div>
       </div>
       <div className="ButtonContainer">
-        <button onClick={boolean ? () => teste() : () => criaObjeto()}>Gravar Dados</button>
+        <button onClick={boolean ? () => atualizaObjeto() : () => criaObjeto()}>Gravar Dados</button>
         <button onClick={() => deletar()} disabled={deleteButton}>Excluir Dados</button>
       </div>
       {/* Parte de baixo  */}
@@ -266,12 +232,12 @@ function App() {
 
         <table>
           <tr>
-            <th>Nome</th>
-            <th>CPF</th>
-            <th>RG</th>
-            <th>CEP</th>
-            <th>Telefone - Descrição</th>
-            <th></th>
+            <th width="300" height="50">Nome</th>
+            <th width="300" height="50">CPF</th>
+            <th width="300" height="50">RG</th>
+            <th width="300" height="50">CEP</th>
+            <th width="300" height="50">Telefone - Descrição</th>
+            <th width="50"></th>
           </tr>
           {
             dados.map((dado) => {
@@ -289,8 +255,7 @@ function App() {
                         <></>
                     )
                   })}</td>
-
-                  <button onClick={() => editar(dado.Id)}>Editar</button>
+                  <button className="TableButton" onClick={() => editar(dado.Id)}>Editar</button>
                 </tr>
               )
             })
